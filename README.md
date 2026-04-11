@@ -1,5 +1,4 @@
 # Name of the project
-***
 ![Image of project running correctly](relative image in repository)
 ***
 This is a personal portfolio program, it is showcasing a few of the projects I have made this semester.
@@ -8,14 +7,12 @@ It includes a Morse code translator, a password generator, and more!
 Please have fun playing my projects! (They're all kind of boring actually, but maybe you'll find them usefull!).
 
 ## Steps for use
-***
 1. Open VS code, or a codespace (DISCLAIMER: May break if using a codespace)
 2. Go to the main.py file in this repo.
 3. press the RUN button.
 4. Have fun!
 
 ## List of KEY features
-***
 - GUI
     - This program will entirely be GUI based, using TKinter
         - in other words it will have visual aspects outside of the terminal.
@@ -43,7 +40,6 @@ Please have fun playing my projects! (They're all kind of boring actually, but m
 
 
 ## Installation Instructions
-***
 There are no necessary installation steps to get the code
 HOWEVER, it relies on MatPlotLib, as such, please run this in your terminal: pip install matplotlib
  - ^ if it doesn't work, try running this in your terminal instead: pip3 install matplotlib
