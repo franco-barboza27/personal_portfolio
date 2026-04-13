@@ -1,29 +1,10 @@
 # FB 2nd Personal Library Program
 
 import sys
+import threading
+from helpers import *
 
 # USES A SET, BUT IT JUST FUNCTIONS AS A STRING------------------------------------------------------------------------------------------
-
-# input checking function
-    # Loop until otherwise:
-        # ask which item wanted
-        # try to turn it into a number
-            # if that doesn't work retry the loop
-        # if it is in the range of the allowed inputs break the loop
-def inputchecker(rangeofchoices):
-    while True:
-            choicevar = input(f"Which one would you like to choose?(1~{rangeofchoices}):\n")
-            try:
-                choicevar = int(choicevar)
-                if choicevar in range(1, rangeofchoices+1):
-                    break
-                else:
-                    print("That's not an option :(")
-                    continue
-            except:
-                    continue
-            
-    return choicevar
 
 # add item function
     # display What is the title of this book?  # In the future this can change to the word "work"
@@ -32,7 +13,7 @@ def inputchecker(rangeofchoices):
     # otherwise add the book to the book database
     
     # call the menu
-def additems(database):
+def additems(database, nwindow):
     while True:
         name = input("What is the title of this book?:\n")
         creator = input("Who is the author of this book?:\n")
@@ -54,7 +35,7 @@ def additems(database):
             else:
                 print("Going to the menu")
                 print("\n\n\n")
-                menu(database)
+                librarymenu(database, nwindow)
 
 # search for an item function
     # ask if they'd like to search by title or by author
@@ -64,7 +45,7 @@ def additems(database):
         # display the book and the author(s) who wrote it
 
     # call the menu
-def searcher(database):
+def searcher(database, nwindow):
     print("Would you like to:\n1. Search by book name\n2. Search by author\n3. Go back to menu")
     checker = inputchecker(3)
 
@@ -100,7 +81,7 @@ def searcher(database):
     # otherwise ask them to retry it
 
     # call the menu
-def remover(database):
+def remover(database, nwindow):
     title = input("What is the name of the book?")
     author = input("What is the name of the author?")
 
@@ -110,7 +91,7 @@ def remover(database):
         print("Now deleting and going to menu")
     else:
         print("Ok, going back to menu")
-        menu(database)
+        librarymenu(database, nwindow)
 
     counter = 0
     for item in database[0]:
@@ -120,7 +101,7 @@ def remover(database):
                 database[1].pop(counter)
         counter += 1
     
-    menu(database)
+    librarymenu(database, nwindow)
     print("\n\n\n")
 
 # view works function
@@ -129,7 +110,7 @@ def remover(database):
     # for every pair in the booklist
         # display the count. book title and by author
         # add 1 to count
-def viewworks(database):
+def viewworks(database, nwindow):
     listednumber = 0
     databasesize = len(database[0])
     counter = 0
@@ -147,7 +128,7 @@ def viewworks(database):
 
         if answer == 1:
             print("Going to the menu")
-            menu(database)
+            librarymenu(database, nwindow)
             print("\n\n\n")
         elif answer == 2:
             print("Very well.")
@@ -160,7 +141,7 @@ def viewworks(database):
             # display the item
             # keep looping
     # otherwise go back to menu
-def viewreviews(database):
+def viewreviews(database, nwindow):
     while True:
         print("Do you want to see a random review?\n1. Yes\n2. No")
         answer = inputchecker(2)
@@ -181,7 +162,7 @@ def viewreviews(database):
     # Ask them which one they want to do
         # check if it's valid
     # call the corresponding function
-def menu(database):
+def librarymenu(database, nwindow):
     while True:
         print("Which would you like to use? (enter the number of the item)")
 
@@ -190,34 +171,49 @@ def menu(database):
         for item in optlist:
             print(item)
 
-        choice = inputchecker(5)
+        choice = inputchecker(6)
         print("\n\n\n")
 
         if choice == 1:
             print("Opening book list")
-            viewworks(database)
+            viewworks(database, nwindow)
         elif choice == 2:
             print("Opening sort menu")
-            searcher(database)
+            searcher(database, nwindow)
         elif choice == 3:
             print("Going to the Item Addition menu")
-            additems(database)
+            additems(database, nwindow)
         elif choice == 4:
             print("Going to the Item Removal menu")
-            remover(database)
+            remover(database, nwindow)
         elif choice == 5:
             print("Opening the review menu")
-            viewreviews(database)
+            viewreviews(database, nwindow)
         else:
             print("Are you certain you want to terminate the program? Doing so will permanantly clear your database.")
             print("1. Yes\n2. No")
             terminatequestion = inputchecker(2)
             if terminatequestion == 1:
-                sys.exit()
+                print("(If this doesn't automatically open the window, you can also use the task bar)")
+                nwindow.after(0, lambda: getwindow(nwindow))
+                return
             else:
                 print("Very well, going back to the menu.")
 
-print("Hello, this is a book database!\nThe main point of it is to store books and their authors inside of one library.")
-books = [[], [], {"2/5 stars, mediocre."}]
+def librarymenustartup(database, nwindow):
+    thread = threading.Thread(
+        target=librarymenu,
+        args=(database, nwindow),
+        daemon=True
+    )
+    thread.start()
 
-menu(books)
+# Startup function for LIBRARY:
+    # create a new thread using threading library
+        # make the target function the librarymenu
+        # set the args to be the nwindow and database
+        # set daemon to True
+    # start the thread
+
+def bookget():
+    books = [[], [], {"2/5 stars, mediocre."}]

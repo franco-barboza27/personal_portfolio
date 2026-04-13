@@ -40,9 +40,7 @@ Please have fun playing my projects! (They're all kind of boring actually, but m
 
 
 ## Installation Instructions
-There are no necessary installation steps to get the code
-HOWEVER, it relies on MatPlotLib, as such, please run this in your terminal: pip install matplotlib
- - ^ if it doesn't work, try running this in your terminal instead: pip3 install matplotlib
+There are no necessary installation steps to get the code aside from copying the folder/repository and pressing RUN
 
 ## Contributors
 - Gummy

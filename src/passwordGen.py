@@ -1,31 +1,9 @@
 # FB 2nd Password Generator
-import sys
 import random as r
+import threading
+from helpers import *
 
 # COMPOUND INTEREST DOES NOT GIVE A READABLE DOLLAR AMOUNT----------------------------------------------------------------------------------
-
-# input checking function
-    # Loop until otherwise:
-        # ask which item wanted
-        # try to turn it into a number
-            # if that doesn't work retry the loop
-        # if it is in the range of the allowed inputs break the loop
-def inputchecker(rangeofchoices):
-    while True:
-            choicevar = input(f"Which one would you like to choose?(1~{rangeofchoices}):\n")
-            try:
-                choicevar = int(choicevar)
-                if choicevar in range(1, rangeofchoices+1):
-                    break
-                else:
-                    print("That's not an option :(")
-                    continue
-            except:
-                    continue
-            
-    return choicevar
-
-# Menu FUNCTION:
     # display the option list (1.generate a password, 2. exit program)
 
     # call the input checker
@@ -34,15 +12,35 @@ def inputchecker(rangeofchoices):
         # call the requirements function
     # if they chose to exit
         # leave the program
-def menu():
+def passmenu(window):
     print("1. make a password\n2. leave the program?")
     placevar = inputchecker(2)
 
     match placevar:
         case 1:
-            requirements()
+            requirements(window)
         case 2:
-            sys.exit()
+            print("(If this doesn't automatically open the window, you can also use the task bar)")
+            window.after(0, lambda: getwindow(window))
+            return
+        
+def passmenustartup(window):
+    thread = threading.Thread(
+        target=passmenu,
+        args=(window,),
+        daemon=True
+    )
+    thread.start()
+
+    # Startup function for PASSWORD GEN:
+    # create a new thread using threading library
+        # make the target function the passmenu
+        # set the args to be the window
+        # set daemon to True
+    # start the thread
+
+
+
 # requisite asker FUNCTION
     # always looping
         # ask for the length of the password
@@ -57,7 +55,7 @@ def menu():
 
     # call generator
 
-def requirements():
+def requirements(window):
     while True:
         try:
             passwordlength = int(input("How many characters should the password be?:\n"))
@@ -83,7 +81,7 @@ def requirements():
         
         answerstorage.append(answer)
     
-    generator(answerstorage)
+    generator(answerstorage, window)
 
 
 # generator FUNCTION
@@ -110,7 +108,7 @@ def requirements():
         
         # display the string
 
-def generator(requisites):
+def generator(requisites, window):
     chartype = {1:[65, 90], 2:[97, 122], 3:[48, 57], 4:[33, 47]}
     tracker = [1, 2, 3, 4]
 
@@ -158,10 +156,4 @@ def generator(requisites):
         passwordnum += 1
         print(f"{passwordnum}. {stringpassword}")
 
-    menu()
-
-# Introduce the program, this is a password generator
-
-print("Hello! This is a password generator.")
-
-menu()
+    passmenu(window)

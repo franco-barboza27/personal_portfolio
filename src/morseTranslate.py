@@ -1,25 +1,11 @@
 # FB CP2 Morse Code Translator
 import sys as s
+from helpers import *
+import tkinter
+import threading
+
 
 # ALREADY GOOD, JUST NEEDS GUI------------------------------------------------------------------------------------------------------------
-
-def inputchecker(rangeofchoices):
-    while True:
-            choicevar = input(f"Which one would you like to choose?(1~{rangeofchoices}):\n")
-            try:
-                choicevar = int(choicevar)
-                if choicevar in range(1, rangeofchoices+1):
-                    break
-                else:
-                    print("That's not an option :(")
-                    continue
-            except:
-                    continue
-            
-    return choicevar
-
-# Checks the inputs of the uer (made in a previous project)
-
 def translator(answerkey, sentence, conversion):
 
     printableform = []
@@ -37,7 +23,7 @@ def translator(answerkey, sentence, conversion):
                     printableform.append(answerkey[becomesconversion][charindex])
     except:
         print("Oh! it looks like you didn't actually insert anything before pressing 0, huh...\n")
-        menu(answerkey)
+        morsethread(answerkey)
 
     displayer = ""
 
@@ -52,7 +38,7 @@ def translator(answerkey, sentence, conversion):
         # add the same index of the thing on the morse tuple to an empty string
         # if it isn't, add a space to the empty string
 
-def wordstomorse(answerkey):
+def wordstomorse(answerkey, nwindow):
     words = input("What would you like to encode into morse? (Please avoid non-alphabeticall or numerical values)\n")
     words = words.upper()
 
@@ -60,7 +46,7 @@ def wordstomorse(answerkey):
 
     print(displayer)
 
-    menu(answerkey)
+    morsethread(answerkey, nwindow)
 
 # Words to Morse translator
     # Tell them that the coder will not work with any special character aside from the space button
@@ -70,7 +56,7 @@ def wordstomorse(answerkey):
     # print the string
     # return to the main menu
 
-def morsetowords(answerkey):
+def morsetowords(answerkey, nwindow):
     morsesentence = []
 
     while True:
@@ -78,7 +64,7 @@ def morsetowords(answerkey):
         if morse == "0":
             break
         elif morse == "QUIT":
-            menu(answerkey)
+            morsethread(answerkey, nwindow)
         else:
             morsesentence.append(morse)
         
@@ -88,7 +74,7 @@ def morsetowords(answerkey):
 
     print(displayer)
 
-    menu(answerkey)
+    morsethread(answerkey, nwindow)
     
 
 # Morse to Words
@@ -112,25 +98,37 @@ def morsetowords(answerkey):
 
         # display the finished up thing
         
-def menu(answerkey):
-    print("1. Words to Morse\n2. Morse to Words\n3. Exit program\n\n")
+def morsethread(answerkey, nwindow):
+    print("1. Words to Morse\n2. Morse to Words\n3. Go back to the menu page\n")
 
     choice = inputchecker(3)
 
     match choice:
         case 1:
-            wordstomorse(answerkey)
+            wordstomorse(answerkey, nwindow)
         case 2:
-            morsetowords(answerkey)
+            morsetowords(answerkey, nwindow)
         case 3:
-            s.exit()
-
+            print("(If this doesn't automatically open the window, you can also use the task bar)")
+            nwindow.after(0, lambda: getwindow(nwindow))
+            return
 # ask what they want to do, call the function
 
-wordsandmorse = [("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"), (".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..", "--", "-.", "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--..", "-----", ".----", "..---", "...--", "....-", ".....", "-....", "--...", "---..", "----.")]
+def morsemenustartup(answerkey, nwindow):
+    thread = threading.Thread(
+        target=morsethread,
+        args=(answerkey, nwindow),
+        daemon=True
+    )
+    thread.start()
+
+# Startup function for MORSE TRANLATOR:
+    # create a new thread using threading library
+        # make the target function the morsethread
+        # set the args to be the nwindow and the answerkey
+        # set daemon to True
+    # start the thread
+
+def wordsandmorse():
+    return [("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"), (".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..", "--", "-.", "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--..", "-----", ".----", "..---", "...--", "....-", ".....", "-....", "--...", "---..", "----.")]
 # Create a dictionary with a key for the MORSE tuple and a key for the letters tuple.
-
-print("Hello! This is a simple morse code translator, it only works if you know what the spacing of the letters is, and does not have a brute force decoder.\n\n")
-# introduce program
-
-menu(wordsandmorse)

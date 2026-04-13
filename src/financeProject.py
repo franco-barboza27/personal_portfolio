@@ -1,33 +1,10 @@
 # FB Financial Calculator P.2
+from helpers import *
+import threading
 
 # COMPOUND INTEREST DOES NOT GIVE A READABLE DOLLAR AMOUNT----------------------------------------------------------------------------------
 
 # Checks if it's valid, stolen from a past project
-
-def roundfunc(question):
-    while True:
-        try:
-            var = round(float(input(question)), 2)
-            break
-        except:
-            print("You inputed a string of some kind (letters)")
-
-    return var
-
-def inputchecker(rangeofchoices):
-    while True:
-            choicevar = input(f"Which one would you like to choose?(1~{rangeofchoices})")
-            try:
-                choicevar = int(choicevar)
-                if choicevar in range(1, rangeofchoices+1):
-                    break
-                else:
-                    print("That's not an option :(")
-                    continue
-            except:
-                    continue
-            
-    return choicevar
 
 # Savings Time Calculator
     # Ask how much they want to save as a rounded FLOAT VAR
@@ -39,7 +16,7 @@ def inputchecker(rangeofchoices):
     # optionally: convert time frame to every other time frame and present it in that form as well (e.g. Amount:100, inserting: 10, timeframe: monthly, "It will take ten months, or 40 weeks, or .83 years, or 80 biweeks, or ~300 days")
     # return to the menu
 
-def savingstime():
+def savingstime(nwindow):
 
     savingstotal = roundfunc("How much do you want to have saved by the end?")
     savingamount = roundfunc("How much do you add each time you input money")
@@ -49,9 +26,9 @@ def savingstime():
 
     mintimes = round((savingstotal/savingamount), 2)
 
-    print(f"It will take you {mintimes} {timekeep[timeframe]}s to save to {savingstotal:.2}$")
+    print(f"It will take you {mintimes} {timekeep[timeframe]}s to save to {savingstotal:.2f}$")
 
-    menu()
+    financemenu(nwindow)
 
 # Compound Interest Calculator
     # Ask how much interest they have
@@ -66,7 +43,7 @@ def savingstime():
     # when loop ends, display info (e.g. "in # of time frame with interest, you will have #$")
     # return to menu func
 
-def compoundinterest():
+def compoundinterest(nwindow):
             
     interest = roundfunc("What is your interest currently (out of 100, ex: 10'%' interest = 10 not .10)?")
     interest = interest/100
@@ -77,9 +54,9 @@ def compoundinterest():
     for i in range(timeamount+1):
         startingamount = startingamount + (startingamount * interest)
     
-    print(f"Your new amount of money will be {startingamount:.2}$")
+    print(f"Your new amount of money will be {startingamount:.2f}$")
 
-    menu()
+    financemenu(nwindow)
 
 # Budget Allocator
     # ask how much money they have
@@ -97,7 +74,7 @@ def compoundinterest():
             # display the new value with a % and the category name
     # call menu
 
-def budget():
+def budget(nwindow):
     def percentageinator(total, amount):
         decimal = amount/total
         percent = decimal * 100
@@ -134,7 +111,7 @@ def budget():
     else:
         print("You have went over your budget.")
 
-    menu()
+    financemenu(nwindow)
         
 
 # Sale Price Calculator
@@ -145,14 +122,14 @@ def budget():
     # multiply item cost by that number
     # display new cost
 
-def salesprice():
+def salesprice(nwindow):
     cost = roundfunc("What is the cost of the item?")
     discount = roundfunc("What the discount? (out of 100, ex: 10'%' off discount = 10 not .10)")
     discount = discount/100
 
     newcost = -1 * ((cost*discount) - cost)
     print(f"The new cost is {newcost:.2f}")
-    menu()
+    financemenu(nwindow)
 
 # Tip Calculator 
     # ask for bill
@@ -163,41 +140,56 @@ def salesprice():
     # subtract old cost from new cost as a change variable
     # display new cost and change variable
 
-def tipcalc():
+def tipcalc(nwindow):
     bill = roundfunc("What is the order cost?")
     tip = roundfunc("How much are you tipping? (out of 100, ex: 10'%' off discount = 10 not .10)")
     tip = tip/100
     updbill = bill + (tip * bill)
 
     print(f"The new order cost is {updbill}")
-    menu()
+    financemenu(nwindow)
 # Menu func
     # Present the list of options (2-6)
     # Ask them which one they want to do
         # check if it's valid
     # call the corresponding function
 
-def menu():
+def financemenu(nwindow):
     print("Which would you like to use?")
 
-    optlist = ["1. Savings Time Calculator", "2. Compound Interest Calculator", "3. Budget Allocator", "4. Sale Price Calculator", "5. Tip Calculator"]
+    optlist = ["1. Savings Time Calculator", "2. Compound Interest Calculator", "3. Budget Allocator", "4. Sale Price Calculator", "5. Tip Calculator", "6. Go back to menu"]
 
     for item in optlist:
-         print(item)
+        print(item)
     
-    choice = inputchecker(5)
+    choice = inputchecker(6)
 
     if choice == 1:
-        savingstime()
+        savingstime(nwindow)
     elif choice == 2:
-        compoundinterest()
+        compoundinterest(nwindow)
     elif choice == 3:
-        budget()
+        budget(nwindow)
     elif choice == 4:
-        salesprice()
+        salesprice(nwindow)
     elif choice == 5:
-        tipcalc()
+        tipcalc(nwindow)
+    elif choice == 6:
+        print("(If this doesn't automatically open the window, you can also use the task bar)")
+        nwindow.after(0, lambda: getwindow(nwindow))
+        return
+    
+def financemenustartup(nwindow):
+    thread = threading.Thread(
+        target=financemenu,
+        args=(nwindow,),
+        daemon=True
+    )
+    thread.start()
 
-print("Hello, this is a general financial calculator!")
-
-menu()
+# Startup function for FINANCE:
+    # create a new thread using threading library
+        # make the target function the financemenu
+        # set the args to be the nwindow
+        # set daemon to True
+    # start the thread
