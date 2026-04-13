@@ -1,5 +1,5 @@
 # Name of the project
-![coderunning.png](relative image in repository)
+![Image of project running correctly](coderunning.png)
 ***
 This is a personal portfolio program, it is showcasing a few of the projects I have made this semester.
 This is also my first program with a proper GUI, making it very interesting and cool.

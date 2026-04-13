@@ -5,6 +5,9 @@ from helpers import *
 
 def main():
 
+    def leave():
+        sys.exit()
+
     def openmenu():
         mainwindow.iconify()
         menu.mainmenu(mainwindow)
@@ -21,7 +24,7 @@ def main():
 
     start = tk.Label(mainwindow, text="Welcome to my personal portfolio!", font=("Sans Serif", 15, "italic"))
     contbtn = tk.Button(mainwindow, text="Continue to Menu", command=openmenu)
-    exitbtn = tk.Button(mainwindow, text="EXIT program", command= lambda: sys.exit)
+    exitbtn = tk.Button(mainwindow, text="EXIT program", command=leave)
     
     # Create a main title, a button to the main menu, and a exit program that shuts everything off
 
